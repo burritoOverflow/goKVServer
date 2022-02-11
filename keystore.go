@@ -25,6 +25,14 @@ func Get(key string) (string, error) {
 	return value, nil
 }
 
+func GetAll() KVList {
+	var kvs KVList
+	for k, v := range store {
+		kvs = append(kvs, KeyValEntry{Key: k, Value: v})
+	}
+	return kvs
+}
+
 func Put(key string, value string) error {
 	log.Printf("Put: Request to get key %s\n", key)
 	store[key] = value

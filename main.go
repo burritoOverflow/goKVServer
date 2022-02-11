@@ -16,6 +16,8 @@ type KeyValEntry struct {
 	Value string `json:"value"`
 }
 
+type KVList []KeyValEntry
+
 func getUptime() time.Duration {
 	return time.Since(applicationStartTime).Round(time.Second)
 }
@@ -30,6 +32,16 @@ func getKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(keyRes + "\n"))
+}
+
+func getAllKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	contents := GetAll()
+	kvlist, err := json.Marshal(contents)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error"))
+	}
+	w.Write(kvlist)
 }
 
 func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +78,7 @@ func main() {
 	applicationStartTime = time.Now()
 	r := mux.NewRouter()
 	r.HandleFunc("/", baseHandlerFunc)
+	r.HandleFunc("/keys", getAllKeyHandlerFunc).Methods("GET")
 	r.HandleFunc("/keys", addKeyHandlerFunc).Methods("PUT", "POST")
 	r.HandleFunc("/keys/{key}", getKeyHandlerFunc).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", r))
