@@ -81,5 +81,5 @@ func main() {
 	r.HandleFunc("/keys", getAllKeyHandlerFunc).Methods("GET")
 	r.HandleFunc("/keys", addKeyHandlerFunc).Methods("PUT", "POST")
 	r.HandleFunc("/keys/{key}", getKeyHandlerFunc).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
