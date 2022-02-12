@@ -31,7 +31,7 @@ func Update(key string, value string) error {
 	_, contains := keyStore[key]
 	if !contains {
 		// key doesn't exist, cannot update
-		log.Printf("Error updating key %s, does not exist in store\n", key)
+		log.Printf("Update: Error updating key %s, does not exist in store\n", key)
 		return ErrorNoSuchKey
 	}
 	keyStore[key] = value
@@ -52,7 +52,7 @@ func Put(key string, value string) error {
 
 	_, contains := keyStore[key]
 	if contains {
-		log.Printf("Key: %s already exits; not adding", key)
+		log.Printf("Put: Key: %s already exits; not adding", key)
 		return ErrorKeyExists
 	}
 
