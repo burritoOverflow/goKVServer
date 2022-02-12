@@ -19,6 +19,13 @@ func TestKeyStorePut(t *testing.T) {
 	if !contains {
 		t.Errorf("Value %s not stored in keystore with key %s\n", valStr, keyStr)
 	}
+
+	// try put again; should fail with the existing key
+	err = Put(keyStr, valStr)
+	if err == nil {
+		t.Errorf("Error should be present for existing key %s\n", keyStr)
+	}
+
 }
 
 func TestKeyStoreGet(t *testing.T) {

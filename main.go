@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 var applicationStartTime time.Time
@@ -48,7 +49,7 @@ func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	// add new key
 	case http.MethodPost:
-		// if exists add anyway
+		// if exists, error thrown
 		var kvEntry KeyValEntry
 		_ = json.NewDecoder(r.Body).Decode(&kvEntry)
 
