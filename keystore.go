@@ -10,12 +10,20 @@ var keyStore = make(map[string]string)
 var ErrorNoSuchKey = errors.New("no such key")
 var ErrorKeyExists = errors.New("existing key")
 
+// Delete the key from the map; err if not found
 func Delete(key string) error {
 	log.Printf("Delete: Request to delete for Key: %s\n", key)
+	// delete doesn't return err, but inform the user of a bad req
+	_, contains := keyStore[key]
+	if !contains {
+		log.Printf("Delete: Cannot delete non-existant key %s\n", key)
+		return ErrorNoSuchKey
+	}
 	delete(keyStore, key)
 	return nil
 }
 
+// Return the key from the map if found, err otherwise
 func Get(key string) (string, error) {
 	log.Printf("Get: Request to get key %s\n", key)
 	value, ok := keyStore[key]
@@ -48,7 +56,7 @@ func GetAll() KVList {
 
 // Only allow put to succeed when the key does not exist
 func Put(key string, value string) error {
-	log.Printf("Put: Request to get key %s\n", key)
+	log.Printf("Put: Request to put key %s\n", key)
 
 	_, contains := keyStore[key]
 	if contains {

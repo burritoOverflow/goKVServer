@@ -91,6 +91,9 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestGetAll(t *testing.T) {
+	// remove all existing keys before testing
+	keyStore = make(map[string]string)
+
 	testKeyOne := "one"
 	testValOne := "valone"
 	testKeyTwo := "two"
@@ -113,6 +116,29 @@ func TestGetAll(t *testing.T) {
 	ok := testEq(kvList, results)
 	if !ok {
 		t.Error("Contents not equal")
+	}
+}
+
+func TestDelete(t *testing.T) {
+	key := "key"
+	value := "value"
+	keyStore[key] = value
+
+	err := Delete(key)
+	if err != nil {
+		t.Error("Error when attempting delete")
+	}
+
+	// ensure that the key was removed
+	_, contains := keyStore[key]
+	if contains {
+		t.Errorf("Key %s not deleted after Delete\n", key)
+	}
+
+	// attempts to delete existing key should throw error
+	err = Delete(key)
+	if err == nil {
+		t.Error("No error thrown when Delete on non-existing key")
 	}
 
 }
