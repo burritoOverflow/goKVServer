@@ -1,7 +1,6 @@
 package main
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -68,6 +67,29 @@ func TestKeyStoreDelete(t *testing.T) {
 	}
 }
 
+func TestUpdate(t *testing.T) {
+	// check that an existing key's update works
+	testKey := "testkey"
+	testVal := "testval"
+
+	keyStore[testKey] = testVal
+
+	newVal := "newval"
+	err := Update(testKey, newVal)
+	if err != nil {
+		t.Error("Error updating key")
+	}
+
+	if keyStore[testKey] != newVal {
+		t.Error("Key not updated to new value")
+	}
+
+	err = Update("notvalidkey", "notvalidvalue")
+	if err == nil {
+		t.Error("Updating non-existant key should result in error")
+	}
+}
+
 func TestGetAll(t *testing.T) {
 	testKeyOne := "one"
 	testValOne := "valone"
@@ -88,7 +110,21 @@ func TestGetAll(t *testing.T) {
 
 	results := GetAll()
 
-	if !reflect.DeepEqual(results, kvList) {
-		t.Error("Contents not equal to test set")
+	ok := testEq(kvList, results)
+	if !ok {
+		t.Error("Contents not equal")
 	}
+
+}
+
+func testEq(a, b KVList) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }

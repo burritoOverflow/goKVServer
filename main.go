@@ -46,11 +46,12 @@ func getAllKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 }
 
 func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	var kvEntry KeyValEntry
+
 	switch r.Method {
 	// add new key
 	case http.MethodPost:
 		// if exists, error thrown
-		var kvEntry KeyValEntry
 		_ = json.NewDecoder(r.Body).Decode(&kvEntry)
 
 		err := Put(kvEntry.Key, kvEntry.Value)
@@ -60,6 +61,26 @@ func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
+		w.Header().Set("Content-Type", "application/json")
+		jsonKv, err := json.Marshal(kvEntry)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Error"))
+		}
+		w.Write(jsonKv)
+
+	case http.MethodPut:
+		// update the key; if exists, put isn't valid
+		_ = json.NewDecoder(r.Body).Decode(&kvEntry)
+
+		err := Update(kvEntry.Key, kvEntry.Value)
+		if err != nil {
+			// key does not exist; cannot update
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
 		jsonKv, err := json.Marshal(kvEntry)
 		if err != nil {

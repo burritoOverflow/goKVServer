@@ -26,6 +26,18 @@ func Get(key string) (string, error) {
 	return value, nil
 }
 
+// Update key to value, only if key exists
+func Update(key string, value string) error {
+	_, contains := keyStore[key]
+	if !contains {
+		// key doesn't exist, cannot update
+		log.Printf("Error updating key %s, does not exist in store\n", key)
+		return ErrorNoSuchKey
+	}
+	keyStore[key] = value
+	return nil
+}
+
 func GetAll() KVList {
 	var kvs KVList
 	for k, v := range keyStore {
