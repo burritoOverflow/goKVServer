@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -106,16 +107,22 @@ func TestGetAll(t *testing.T) {
 	tkThreeKv := KeyValEntry{Key: testKeyThree, Value: testValThree}
 
 	kvList := KVList{tkOneKV, tkTwoKv, tkThreeKv}
+	sort.Slice(kvList, func(i, j int) bool {
+		return kvList[i].Key < kvList[j].Key
+	})
 
 	keyStore[testKeyOne] = testValOne
 	keyStore[testKeyTwo] = testValTwo
 	keyStore[testKeyThree] = testValThree
 
 	results := GetAll()
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Key < results[j].Key
+	})
 
 	ok := testEq(kvList, results)
 	if !ok {
-		t.Error("Contents not equal")
+		t.Errorf("Contents not equal, expected: %s, got: %s", kvList, results)
 	}
 }
 
