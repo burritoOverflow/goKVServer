@@ -28,6 +28,7 @@ func TestGenCustomerKey(t *testing.T) {
 }
 
 func TestPutGenKeyVal(t *testing.T) {
+	InitKeyStore()
 	cust := Customer{custId, "TestFirst", "TestLast", "123 Main Street", "Nowhere", "MD", "777777"}
 	err := cust.AddCustomerRecord()
 	if err != nil {

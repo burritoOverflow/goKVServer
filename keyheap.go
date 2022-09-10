@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/heap"
 	"time"
 )
 
@@ -16,15 +17,30 @@ func (kmh KeyMinHeap) Len() int {
 	return len(kmh)
 }
 
+func (kmh KeyMinHeap) idxOf(key string) int {
+	for i, kd := range kmh {
+		if kd.Key == key {
+			return i
+		}
+	}
+	return -1
+}
+
 func (kmh *KeyMinHeap) Delete(key string) {
-	h := make(KeyMinHeap, kmh.Len())
-	for i := 0; i < kmh.Len(); i++ {
+	h := make(KeyMinHeap, kmh.Len()-1)
+	j := 0
+
+	for i := 0; i < kmh.Len()-1; i++ {
 		keyMinHeap := *kmh
 		if keyMinHeap[i].Key == key {
 			continue
 		}
-		h = append(h, keyMinHeap[i])
+		h[j] = keyMinHeap[i]
+		j++
 	}
+
+	heap.Init(&h)
+	*kmh = h
 }
 
 func (kmh KeyMinHeap) Less(i int, j int) bool {

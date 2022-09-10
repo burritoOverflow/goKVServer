@@ -6,6 +6,7 @@ import (
 )
 
 func TestKeyStorePut(t *testing.T) {
+	InitKeyStore()
 	keyStr := "keyone"
 	valStr := "valone"
 	defer delete(keyStore, keyStr)
@@ -29,6 +30,7 @@ func TestKeyStorePut(t *testing.T) {
 }
 
 func TestKeyStoreGet(t *testing.T) {
+	InitKeyStore()
 	testKey := "testkey"
 	testVal := "testval"
 
@@ -52,6 +54,7 @@ func TestKeyStoreGet(t *testing.T) {
 }
 
 func TestKeyStoreDelete(t *testing.T) {
+	InitKeyStore()
 	testKey := "testkey"
 	testVal := "testval"
 
@@ -70,6 +73,7 @@ func TestKeyStoreDelete(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	// check that an existing key's update works
+	InitKeyStore()
 	testKey := "testkey"
 	testVal := "testval"
 
@@ -93,6 +97,7 @@ func TestUpdate(t *testing.T) {
 
 func TestGetAll(t *testing.T) {
 	// remove all existing keys before testing
+	InitKeyStore()
 	keyStore = make(map[string]string)
 
 	testKeyOne := "one"
@@ -127,6 +132,7 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
+	InitKeyStore()
 	key := "key"
 	value := "value"
 	keyStore[key] = value

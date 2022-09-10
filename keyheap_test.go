@@ -40,3 +40,24 @@ func TestKeyMinHeapPop(t *testing.T) {
 		}
 	}
 }
+
+func TestKeyHeapKeyStoreLimit(t *testing.T) {
+	InitKeyStore()
+
+	heapLimit := 12
+	for i := 0; i < heapLimit; i++ {
+		_ = Put(fmt.Sprintf("Key:%d", i), "val")
+	}
+
+	for i := 0; i < heapLimit; i++ {
+		// add new keys past the limit
+		_ = Put(fmt.Sprintf("Key:%d", 100+i), "val")
+
+		// check that the original keys are no longer present
+		oldKey := fmt.Sprintf("Key:%d", i)
+		_, err := Get(oldKey)
+		if err == nil {
+			t.Errorf("Got key %s - expected to be popped", oldKey)
+		}
+	}
+}

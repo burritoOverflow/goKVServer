@@ -1,14 +1,37 @@
 package main
 
 import (
+	"container/heap"
 	"errors"
 	"log"
 )
 
-var keyStore = make(map[string]string)
+var keyStore map[string]string
+var keyStoreHeap = KeyMinHeap{}
+
+const maxKeys int = 12
 
 var ErrorNoSuchKey = errors.New("no such key")
 var ErrorKeyExists = errors.New("existing key")
+
+func popKeyHeap() string {
+	popVal := heap.Pop(&keyStoreHeap)
+	return popVal.(KeyDate).Key
+}
+
+func pushKeyHeap(key string) {
+	heap.Push(&keyStoreHeap, key)
+}
+
+// InitKeyStore create the heap associated with the keystore
+func InitKeyStore() {
+	keyStore = make(map[string]string)
+	heap.Init(&keyStoreHeap)
+}
+
+func lenKeyStore() int {
+	return len(keyStore)
+}
 
 // Delete the key from the map; err if not found
 func Delete(key string) error {
@@ -20,6 +43,8 @@ func Delete(key string) error {
 		return ErrorNoSuchKey
 	}
 	delete(keyStore, key)
+	keyStoreHeap.Delete(key)
+	log.Printf("Deleted key %s", key)
 	return nil
 }
 
@@ -66,5 +91,12 @@ func Put(key string, value string) error {
 
 	// otherwise, add the key
 	keyStore[key] = value
+	if lenKeyStore() == maxKeys {
+		popVal := popKeyHeap()
+		log.Printf("Key Store reached limit; popped and removed %s", popVal)
+		delete(keyStore, popVal)
+	}
+	pushKeyHeap(key)
+
 	return nil
 }
