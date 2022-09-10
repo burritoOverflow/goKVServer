@@ -91,7 +91,7 @@ func Put(key string, value string) error {
 
 	// otherwise, add the key
 	keyStore[key] = value
-	if lenKeyStore() == maxKeys {
+	if lenKeyStore() > maxKeys {
 		popVal := popKeyHeap()
 		log.Printf("Key Store reached limit; popped and removed %s", popVal)
 		delete(keyStore, popVal)
