@@ -32,17 +32,26 @@ func getKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(keyRes + "\n"))
+	_, err = w.Write([]byte(keyRes + "\n"))
+	if err != nil {
+		log.Printf("getKeyHandlerFunc - Error %s", err)
+	}
 }
 
-func getAllKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func getAllKeyHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 	contents := GetAll()
 	kvlist, err := json.Marshal(contents)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error"))
+		_, err := w.Write([]byte("Error"))
+		if err != nil {
+			log.Printf("getAllKeyHandlerFunc - Error %s", err)
+		}
 	}
-	w.Write(kvlist)
+	_, err = w.Write(kvlist)
+	if err != nil {
+		log.Printf("getAllKeyHandlerFunc - Error %s", err)
+	}
 }
 
 func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -65,9 +74,15 @@ func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		jsonKv, err := json.Marshal(kvEntry)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error"))
+			_, err := w.Write([]byte("Error"))
+			if err != nil {
+				log.Printf("addKeyHandlerFunc - Error %s", err)
+			}
 		}
-		w.Write(jsonKv)
+		_, err = w.Write(jsonKv)
+		if err != nil {
+			log.Printf("addKeyHandlerFunc - Error %s", err)
+		}
 
 	case http.MethodPut:
 		// update the key; if exists, put isn't valid
@@ -85,15 +100,24 @@ func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		jsonKv, err := json.Marshal(kvEntry)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error"))
+			_, err := w.Write([]byte("Error"))
+			if err != nil {
+				log.Printf("Error: %s", err)
+			}
 		}
-		w.Write(jsonKv)
+		_, err = w.Write(jsonKv)
+		if err != nil {
+			log.Printf("Error: %s", err)
+		}
 	}
 }
 
-func baseHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func baseHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 	s := fmt.Sprintf("Uptime: %s", getUptime())
-	w.Write([]byte(s))
+	_, err := w.Write([]byte(s))
+	if err != nil {
+		log.Printf("baseHandlerFunc - Error: %s", err)
+	}
 }
 
 func main() {

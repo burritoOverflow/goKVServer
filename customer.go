@@ -35,13 +35,14 @@ func genCustomerKey(id int64, fieldName string) string {
 // Add K:V pairs for each field of the Customer provided
 // such that K = `cust:CUST_ID:_CUST_FIELD_NAME`, eg `cust:123:firstName`
 // for each field
-func (c *Customer) AddCustomerRecord() {
-	Put(genCustomerKey(c.custId, "firstName"), c.firstName)
-	Put(genCustomerKey(c.custId, "lastName"), c.lastName)
-	Put(genCustomerKey(c.custId, "streetAddress"), c.streetAddress)
-	Put(genCustomerKey(c.custId, "city"), c.city)
-	Put(genCustomerKey(c.custId, "state"), c.state)
-	Put(genCustomerKey(c.custId, "zip"), c.zip)
+func (c *Customer) AddCustomerRecord() (err error) {
+	err = Put(genCustomerKey(c.custId, "firstName"), c.firstName)
+	err = Put(genCustomerKey(c.custId, "lastName"), c.lastName)
+	err = Put(genCustomerKey(c.custId, "streetAddress"), c.streetAddress)
+	err = Put(genCustomerKey(c.custId, "city"), c.city)
+	err = Put(genCustomerKey(c.custId, "state"), c.state)
+	err = Put(genCustomerKey(c.custId, "zip"), c.zip)
+	return
 }
 
 func GetCustomerRecord(custId int64) *Customer {

@@ -23,7 +23,7 @@ func Delete(key string) error {
 	return nil
 }
 
-// Return the key from the map if found, err otherwise
+// Get Return the key from the map if found, err otherwise
 func Get(key string) (string, error) {
 	log.Printf("Get: Request to get key %s\n", key)
 	value, ok := keyStore[key]
@@ -54,7 +54,7 @@ func GetAll() KVList {
 	return kvs
 }
 
-// Only allow put to succeed when the key does not exist
+// Put Only allow put to succeed when the key does not exist
 func Put(key string, value string) error {
 	log.Printf("Put: Request to put key %s\n", key)
 

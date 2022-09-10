@@ -29,7 +29,10 @@ func TestGenCustomerKey(t *testing.T) {
 
 func TestPutGenKeyVal(t *testing.T) {
 	cust := Customer{custId, "TestFirst", "TestLast", "123 Main Street", "Nowhere", "MD", "777777"}
-	cust.AddCustomerRecord()
+	err := cust.AddCustomerRecord()
+	if err != nil {
+		t.Errorf("Adding record for customer %s failed", cust.asStr())
+	}
 	defer cleanUpAfterPutCustomer(t)
 
 	// store the results
