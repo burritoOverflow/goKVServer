@@ -52,8 +52,8 @@ func TestKeyHeapKeyStoreLimit(t *testing.T) {
 	for i := 0; i < heapLimit; i++ {
 		// add new keys past the limit
 		_ = Put(fmt.Sprintf("Key:%d", 100+i), "val")
-		if keyStoreHeap.Len() != heapLimit {
-			t.Errorf("Expected heap limit to be %d, got Len %d", heapLimit, keyStoreHeap.Len())
+		if keyStore.kmh.Len() != heapLimit {
+			t.Errorf("Expected heap limit to be %d, got Len %d", heapLimit, keyStore.kmh.Len())
 		}
 
 		// check that the original keys are no longer present

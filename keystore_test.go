@@ -9,14 +9,14 @@ func TestKeyStorePut(t *testing.T) {
 	InitKeyStore()
 	keyStr := "keyone"
 	valStr := "valone"
-	defer delete(keyStore, keyStr)
+	defer delete(keyStore.m, keyStr)
 
 	err := Put(keyStr, valStr)
 	if err != nil {
 		t.Error("Put failed")
 	}
 
-	_, contains := keyStore[keyStr]
+	_, contains := keyStore.m[keyStr]
 	if !contains {
 		t.Errorf("Value %s not stored in keystore with key %s\n", valStr, keyStr)
 	}
@@ -34,8 +34,8 @@ func TestKeyStoreGet(t *testing.T) {
 	testKey := "testkey"
 	testVal := "testval"
 
-	defer delete(keyStore, testKey)
-	keyStore[testKey] = testVal
+	defer delete(keyStore.m, testKey)
+	keyStore.m[testKey] = testVal
 
 	val, err := Get(testKey)
 	if err != nil {
@@ -58,14 +58,14 @@ func TestKeyStoreDelete(t *testing.T) {
 	testKey := "testkey"
 	testVal := "testval"
 
-	keyStore[testKey] = testVal
+	keyStore.m[testKey] = testVal
 
 	err := Delete(testKey)
 	if err != nil {
 		t.Error("Got error deleting key")
 	}
 
-	_, contains := keyStore[testKey]
+	_, contains := keyStore.m[testKey]
 	if contains {
 		t.Error("Delete failed; map contains k:v")
 	}
@@ -77,7 +77,7 @@ func TestUpdate(t *testing.T) {
 	testKey := "testkey"
 	testVal := "testval"
 
-	keyStore[testKey] = testVal
+	keyStore.m[testKey] = testVal
 
 	newVal := "newval"
 	err := Update(testKey, newVal)
@@ -85,7 +85,7 @@ func TestUpdate(t *testing.T) {
 		t.Error("Error updating key")
 	}
 
-	if keyStore[testKey] != newVal {
+	if keyStore.m[testKey] != newVal {
 		t.Error("Key not updated to new value")
 	}
 
@@ -98,7 +98,7 @@ func TestUpdate(t *testing.T) {
 func TestGetAll(t *testing.T) {
 	// remove all existing keys before testing
 	InitKeyStore()
-	keyStore = make(map[string]string)
+	keyStore.m = make(map[string]string)
 
 	testKeyOne := "one"
 	testValOne := "valone"
@@ -116,9 +116,9 @@ func TestGetAll(t *testing.T) {
 		return kvList[i].Key < kvList[j].Key
 	})
 
-	keyStore[testKeyOne] = testValOne
-	keyStore[testKeyTwo] = testValTwo
-	keyStore[testKeyThree] = testValThree
+	keyStore.m[testKeyOne] = testValOne
+	keyStore.m[testKeyTwo] = testValTwo
+	keyStore.m[testKeyThree] = testValThree
 
 	results := GetAll()
 	sort.Slice(results, func(i, j int) bool {
@@ -135,7 +135,7 @@ func TestDelete(t *testing.T) {
 	InitKeyStore()
 	key := "key"
 	value := "value"
-	keyStore[key] = value
+	keyStore.m[key] = value
 
 	err := Delete(key)
 	if err != nil {
@@ -143,7 +143,7 @@ func TestDelete(t *testing.T) {
 	}
 
 	// ensure that the key was removed
-	_, contains := keyStore[key]
+	_, contains := keyStore.m[key]
 	if contains {
 		t.Errorf("Key %s not deleted after Delete\n", key)
 	}
