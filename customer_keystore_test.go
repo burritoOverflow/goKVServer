@@ -48,7 +48,7 @@ func TestPutGenKeyVal(t *testing.T) {
 			t.Errorf("Error Getting key: %s", custKey)
 		}
 		// add val to map
-		resMap[k] = val
+		resMap[k] = *val
 	}
 
 	if resMap["firstName"] != cust.firstName {

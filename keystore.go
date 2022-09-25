@@ -58,7 +58,7 @@ func Delete(key string) error {
 }
 
 // Get Return the key from the map if found, err otherwise
-func Get(key string) (string, error) {
+func Get(key string) (*string, error) {
 	log.Printf("Get: Request to get key %s\n", key)
 	keyStore.RLock()
 	value, ok := keyStore.m[key]
@@ -66,9 +66,9 @@ func Get(key string) (string, error) {
 
 	if !ok {
 		log.Printf("Get: No Key %s found\n", key)
-		return "", ErrorNoSuchKey
+		return nil, ErrorNoSuchKey
 	}
-	return value, nil
+	return &value, nil
 }
 
 // Update key to value, only if key exists

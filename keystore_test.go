@@ -42,7 +42,7 @@ func TestKeyStoreGet(t *testing.T) {
 		t.Error("Error when getting key from keystore")
 	}
 
-	if val != testVal {
+	if *val != testVal {
 		t.Error("Value not as expected")
 	}
 

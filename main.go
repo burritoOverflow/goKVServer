@@ -32,7 +32,7 @@ func getKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	_, err = w.Write([]byte(keyRes + "\n"))
+	_, err = w.Write([]byte(*keyRes + "\n"))
 	if err != nil {
 		log.Printf("getKeyHandlerFunc - Error %s", err)
 	}

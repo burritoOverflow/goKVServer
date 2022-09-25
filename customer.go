@@ -48,30 +48,49 @@ func (c *Customer) AddCustomerRecord() (err error) {
 func GetCustomerRecord(custId int64) *Customer {
 	c := Customer{custId: custId}
 	var err error
+	var s *string
 
 	firstNameKey := genCustomerKey(custId, "firstName")
-	c.firstName, err = Get(firstNameKey)
+	s, err = Get(firstNameKey)
 	checkAndLogError(err, firstNameKey)
+	if err == nil && s != nil {
+		c.firstName = *s
+	}
 
 	lastNameKey := genCustomerKey(custId, "lastName")
-	c.lastName, err = Get(lastNameKey)
+	s, err = Get(lastNameKey)
 	checkAndLogError(err, lastNameKey)
+	if err == nil && s != nil {
+		c.lastName = *s
+	}
 
 	streetAddrKey := genCustomerKey(custId, "streetAddress")
-	c.streetAddress, err = Get(streetAddrKey)
+	s, err = Get(streetAddrKey)
 	checkAndLogError(err, streetAddrKey)
+	if err == nil && s != nil {
+		c.streetAddress = *s
+	}
 
 	cityKey := genCustomerKey(custId, "city")
-	c.city, err = Get(cityKey)
+	s, err = Get(cityKey)
 	checkAndLogError(err, cityKey)
+	if err == nil && s != nil {
+		c.city = *s
+	}
 
 	stateKey := genCustomerKey(custId, "state")
-	c.state, err = Get(stateKey)
+	s, err = Get(stateKey)
 	checkAndLogError(err, stateKey)
+	if err == nil && s != nil {
+		c.state = *s
+	}
 
 	zipKey := genCustomerKey(custId, "zip")
-	c.zip, err = Get(zipKey)
+	s, err = Get(zipKey)
 	checkAndLogError(err, zipKey)
+	if err == nil && s != nil {
+		c.zip = *s
+	}
 
 	return &c
 }
