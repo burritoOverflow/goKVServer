@@ -80,6 +80,15 @@ func TestUpdate(t *testing.T) {
 	keyStore.m[testKey] = testVal
 
 	newVal := "newval"
+
+	// clean up this addition to avoid failure in other tests
+	defer func(key string) {
+		err := Delete(key)
+		if err != nil {
+			t.Errorf("Got error: %s while attemping clean-up for TestUpdate key %s", err.Error(), key)
+		}
+	}(testKey)
+
 	err := Update(testKey, newVal)
 	if err != nil {
 		t.Error("Error updating key")
@@ -92,6 +101,13 @@ func TestUpdate(t *testing.T) {
 	err = Update("notvalidkey", "notvalidvalue")
 	if err == nil {
 		t.Error("Updating non-existant key should result in error")
+	}
+}
+
+func TestGetAllEmpty(t *testing.T) {
+	results := GetAll()
+	if results == nil || len(results) != 0 {
+		t.Errorf("Expected empty slice, got %v", results)
 	}
 }
 

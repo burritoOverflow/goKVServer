@@ -23,7 +23,7 @@ func getUptime() time.Duration {
 	return time.Since(applicationStartTime).Round(time.Second)
 }
 
-func getKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func GetKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["key"]
 	keyRes, err := Get(key)
@@ -38,7 +38,7 @@ func getKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllKeyHandlerFunc(w http.ResponseWriter, _ *http.Request) {
+func GetAllKeyHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 	contents := GetAll()
 	kvlist, err := json.Marshal(contents)
 	if err != nil {
@@ -54,7 +54,7 @@ func getAllKeyHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+func AddKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	var kvEntry KeyValEntry
 
 	switch r.Method {
@@ -112,7 +112,7 @@ func addKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func baseHandlerFunc(w http.ResponseWriter, _ *http.Request) {
+func BaseHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 	s := fmt.Sprintf("Uptime: %s", getUptime())
 	_, err := w.Write([]byte(s))
 	if err != nil {
@@ -123,9 +123,9 @@ func baseHandlerFunc(w http.ResponseWriter, _ *http.Request) {
 func main() {
 	applicationStartTime = time.Now()
 	r := mux.NewRouter()
-	r.HandleFunc("/", baseHandlerFunc)
-	r.HandleFunc("/keys", getAllKeyHandlerFunc).Methods("GET")
-	r.HandleFunc("/keys", addKeyHandlerFunc).Methods("PUT", "POST")
-	r.HandleFunc("/keys/{key}", getKeyHandlerFunc).Methods("GET")
+	r.HandleFunc("/", BaseHandlerFunc)
+	r.HandleFunc("/keys", GetAllKeyHandlerFunc).Methods("GET")
+	r.HandleFunc("/keys", AddKeyHandlerFunc).Methods("PUT", "POST")
+	r.HandleFunc("/keys/{key}", GetKeyHandlerFunc).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }

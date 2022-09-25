@@ -88,7 +88,7 @@ func Update(key string, value string) error {
 }
 
 func GetAll() KVList {
-	var kvs KVList
+	kvs := KVList{}
 	keyStore.RLock()
 	for k, v := range keyStore.m {
 		kvs = append(kvs, KeyValEntry{Key: k, Value: v})
