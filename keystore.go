@@ -38,7 +38,7 @@ func lenKeyStore() int {
 }
 
 // Delete the key from the map; err if not found
-func Delete(key string) error {
+func Delete(key string) (err error) {
 	log.Printf("Delete: Request to delete for Key: %s\n", key)
 	// delete doesn't return err, but inform the user of a bad req
 	keyStore.Lock()
@@ -49,7 +49,13 @@ func Delete(key string) error {
 		return ErrorNoSuchKey
 	}
 	delete(keyStore.m, key)
-	keyStore.kmh.Delete(key)
+
+	err = keyStore.kmh.Delete(key)
+	if err != nil {
+		log.Printf("Got error attempting to delete from MKH: %s", err)
+		return
+	}
+
 	log.Printf("Deleted key %s", key)
 	delete(keyStore.m, key)
 	keyStore.Unlock()
@@ -72,7 +78,7 @@ func Get(key string) (*string, error) {
 }
 
 // Update key to value, only if key exists
-func Update(key string, value string) error {
+func Update(key string, value string) (err error) {
 	keyStore.Lock()
 	_, contains := keyStore.m[key]
 	if !contains {
@@ -98,7 +104,7 @@ func GetAll() KVList {
 }
 
 // Put Only allow put to succeed when the key does not exist
-func Put(key string, value string) error {
+func Put(key string, value string) (err error) {
 	log.Printf("Put: Request to put key %s\n", key)
 	keyStore.Lock()
 

@@ -9,7 +9,6 @@ func TestKeyStorePut(t *testing.T) {
 	InitKeyStore()
 	keyStr := "keyone"
 	valStr := "valone"
-	defer delete(keyStore.m, keyStr)
 
 	err := Put(keyStr, valStr)
 	if err != nil {
@@ -27,6 +26,9 @@ func TestKeyStorePut(t *testing.T) {
 		t.Errorf("Error should be present for existing key %s\n", keyStr)
 	}
 
+	t.Cleanup(func() {
+		defer delete(keyStore.m, keyStr)
+	})
 }
 
 func TestKeyStoreGet(t *testing.T) {
@@ -34,7 +36,6 @@ func TestKeyStoreGet(t *testing.T) {
 	testKey := "testkey"
 	testVal := "testval"
 
-	defer delete(keyStore.m, testKey)
 	keyStore.m[testKey] = testVal
 
 	val, err := Get(testKey)
@@ -51,6 +52,10 @@ func TestKeyStoreGet(t *testing.T) {
 	if err == nil {
 		t.Error("Error not returned when requesting non-existent key")
 	}
+
+	t.Cleanup(func() {
+		defer delete(keyStore.m, testKey)
+	})
 }
 
 func TestKeyStoreDelete(t *testing.T) {
@@ -58,9 +63,13 @@ func TestKeyStoreDelete(t *testing.T) {
 	testKey := "testkey"
 	testVal := "testval"
 
-	keyStore.m[testKey] = testVal
+	// use Put here otherwise this test fails as the KMH is not instantiated by adding directly to keystore map
+	err := Put(testKey, testVal)
+	if err != nil {
+		t.Errorf("Got error during Put Delete test: %s", err)
+	}
 
-	err := Delete(testKey)
+	err = Delete(testKey)
 	if err != nil {
 		t.Error("Got error deleting key")
 	}
@@ -76,18 +85,8 @@ func TestUpdate(t *testing.T) {
 	InitKeyStore()
 	testKey := "testkey"
 	testVal := "testval"
-
 	keyStore.m[testKey] = testVal
-
 	newVal := "newval"
-
-	// clean up this addition to avoid failure in other tests
-	defer func(key string) {
-		err := Delete(key)
-		if err != nil {
-			t.Errorf("Got error: %s while attemping clean-up for TestUpdate key %s", err.Error(), key)
-		}
-	}(testKey)
 
 	err := Update(testKey, newVal)
 	if err != nil {
@@ -102,6 +101,10 @@ func TestUpdate(t *testing.T) {
 	if err == nil {
 		t.Error("Updating non-existant key should result in error")
 	}
+
+	t.Cleanup(func() {
+		delete(keyStore.m, testKey)
+	})
 }
 
 func TestGetAllEmpty(t *testing.T) {

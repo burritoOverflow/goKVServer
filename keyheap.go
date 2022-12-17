@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"errors"
 	"time"
 )
 
@@ -26,7 +27,12 @@ func (kmh KeyMinHeap) idxOf(key string) int {
 	return -1
 }
 
-func (kmh *KeyMinHeap) Delete(key string) {
+func (kmh *KeyMinHeap) Delete(key string) (err error) {
+	if kmh.Len() == 0 {
+		err = errors.New("KeyMinHeap has length 0; not instantiated prior to Delete")
+		return
+	}
+
 	h := make(KeyMinHeap, kmh.Len()-1)
 	j := 0
 
@@ -41,13 +47,14 @@ func (kmh *KeyMinHeap) Delete(key string) {
 
 	heap.Init(&h)
 	*kmh = h
+	return
 }
 
-func (kmh KeyMinHeap) Less(i int, j int) bool {
+func (kmh KeyMinHeap) Less(i, j int) bool {
 	return kmh[i].timestamp.Before(kmh[j].timestamp)
 }
 
-func (kmh KeyMinHeap) Swap(i int, j int) {
+func (kmh KeyMinHeap) Swap(i, j int) {
 	kmh[i], kmh[j] = kmh[j], kmh[i]
 	kmh[i].index = i
 	kmh[j].index = j
