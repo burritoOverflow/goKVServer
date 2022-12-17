@@ -27,6 +27,11 @@ func (kmh KeyMinHeap) idxOf(key string) int {
 	return -1
 }
 
+func (kmh *KeyMinHeap) At(idx int) (keyDate KeyDate) {
+	keyDate = (*kmh)[idx]
+	return
+}
+
 func (kmh *KeyMinHeap) Delete(key string) (err error) {
 	if kmh.Len() == 0 {
 		err = errors.New("KeyMinHeap has length 0; not instantiated prior to Delete")

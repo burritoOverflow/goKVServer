@@ -7,6 +7,80 @@ import (
 	"time"
 )
 
+func TestAtKeyMinHeap(t *testing.T) {
+	keyMinHeap := &KeyMinHeap{}
+	heap.Init(keyMinHeap)
+
+	n := 100
+	for i := 0; i < n; i++ {
+		heap.Push(keyMinHeap, fmt.Sprintf("Key:%d", i))
+	}
+
+	for i := 0; i < n; i++ {
+		keyDate := keyMinHeap.At(i)
+		kdStr := fmt.Sprintf("Key:%d", i)
+
+		if kdStr != keyDate.Key {
+			t.Errorf("Incorrect key, expected: %s, got %s", kdStr, keyDate.Key)
+		}
+	}
+}
+
+func TestSwapKeyMinHeap(t *testing.T) {
+	keyMinHeap := &KeyMinHeap{}
+	heap.Init(keyMinHeap)
+	keyOneStr := "KeyOne"
+	keyTwoStr := "KeyTwo"
+
+	keyMinHeap.Push(keyOneStr)
+	keyMinHeap.Push(keyTwoStr)
+
+	if keyMinHeap.At(0).Key != keyOneStr && keyMinHeap.At(1).Key != keyTwoStr {
+		t.Errorf("Insertion incorrect")
+	}
+
+	keyMinHeap.Swap(0, 1)
+	if keyMinHeap.At(0).Key != keyTwoStr && keyMinHeap.At(1).Key != keyOneStr {
+		t.Errorf("Swap results incorrect")
+	}
+}
+
+func TestKeyMinHeapIdxOf(t *testing.T) {
+	keyMinHeap := &KeyMinHeap{}
+	heap.Init(keyMinHeap)
+
+	n := 100
+	for i := 0; i < n; i++ {
+		heap.Push(keyMinHeap, fmt.Sprintf("Key:%d", i))
+	}
+
+	for i := 0; i < n; i++ {
+		res := keyMinHeap.idxOf(fmt.Sprintf("Key:%d", i))
+		if res != i {
+			t.Errorf("Expected %d as idxOf, got %d", i, res)
+		}
+	}
+}
+
+func TestLessKeyMinHeap(t *testing.T) {
+	keyMinHeap := &KeyMinHeap{}
+	heap.Init(keyMinHeap)
+	n := 35
+
+	for i := 0; i < n; i++ {
+		time.Sleep(10 * time.Millisecond)
+		// add in order; sleep before each to have a testable ordered slice
+		heap.Push(keyMinHeap, fmt.Sprintf("Key:%d", i))
+	}
+
+	for i := 0; i < n-1; i++ {
+		// ensure each are ordered correctly
+		if keyMinHeap.Less(i, i+1) != true {
+			t.Errorf("Incorrect ordering")
+		}
+	}
+}
+
 func TestKeyMinHeapPop(t *testing.T) {
 	// must instantiate as heap
 	keyMinHeap := &KeyMinHeap{}
@@ -14,7 +88,6 @@ func TestKeyMinHeapPop(t *testing.T) {
 	n := 12
 
 	for i := 0; i < n; i++ {
-		//keyMinHeap.Push(fmt.Sprintf("Key:%d", i))
 		heap.Push(keyMinHeap, fmt.Sprintf("Key:%d", i))
 		time.Sleep(10 * time.Millisecond)
 	}
@@ -22,7 +95,6 @@ func TestKeyMinHeapPop(t *testing.T) {
 	var prevTime time.Time
 	for i := 0; i < n; i++ {
 		expectedStr := fmt.Sprintf("Key:%d", i)
-		//popVal := keyMinHeap.Pop().(KeyDate)
 		popVal := heap.Pop(keyMinHeap).(KeyDate)
 		receivedStr := popVal.Key
 
