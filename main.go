@@ -112,7 +112,13 @@ func AddKeyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func BaseHandlerFunc(w http.ResponseWriter, _ *http.Request) {
+func BaseHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	// only allow GET requests
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	s := fmt.Sprintf("Uptime: %s", getUptime())
 	_, err := w.Write([]byte(s))
 	if err != nil {
